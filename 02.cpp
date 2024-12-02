@@ -43,20 +43,20 @@ public:
         return levels;
     }
 
-    bool checkReportSafety(int report_index)
+    bool checkLevels(std::vector<int> levels)
     {
-        std::vector<int> levels = getReportLevels(report_index);
-        // levels must either all be increasing or all be decreasing
-        // check if first two levels are increasing or decreasing to establish which we want
+        // check if first two levels show an increase or decrease to determine which is desired
         bool increasing = levels[1] > levels[0];
+        // starts at level at index 1 and loops through comparing with prev level
         for (int i = 1; i < levels.size(); i++)
         {
-            // compare if current pair of levels is increasing or decreasing to established desired result
+            // compare if current pair of levels is increasing or decreasing to desired result
+            int change = (abs(levels[i] - levels[i-1]));
             if ((levels[i] > levels[i-1]) != increasing)
             {
                 return false;
             }
-            int change = (abs(levels[i] - levels[i-1]));
+            // and make sure change between levels is between 1 and 3
             if (change < 1 || change > 3)
             {
                 return false;
@@ -65,17 +65,54 @@ public:
         return true;
     }
 
-    int countSafeReports()
+    bool getReportSafety(int report_index, bool problem_dampener)
     {
+        std::vector<int> levels = getReportLevels(report_index);
+        int check = checkLevels(levels);
+        if (checkLevels(levels))
+        {
+            return true;
+        }
+        else if (problem_dampener)
+        {
+            // brute force cause prev solution didn't work
+            std::vector<int> temp_levels;
+            for (int i = 0; i < levels.size(); i++)
+            {
+                temp_levels = levels;
+                temp_levels.erase(temp_levels.begin() + i);
+                if (checkLevels(temp_levels))
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    void countSafeReports()
+    {
+        // without problem dampening (part 1)
         int safe_reports = 0;
         for (int i = 0; i < m_reports.size(); i++)
         {
-            if (checkReportSafety(i))
+            if (getReportSafety(i, false))
             {
                 safe_reports++;
             }
         }
-        return safe_reports;
+        std::cout << "Amount of safe reports: " << safe_reports << std::endl;
+
+        // with problem dampening (part 2)
+        safe_reports = 0;
+        for (int i = 0; i < m_reports.size(); i++)
+        {
+            if (getReportSafety(i, true))
+            {
+                safe_reports++;
+            }
+        }
+        std::cout << "Amount of safe reports with problem dampener: " << safe_reports << std::endl;
     }
 
 private:
@@ -86,7 +123,7 @@ int main()
 {
     RedNosedReports red_nosed_reports;
     red_nosed_reports.getReports("02_input.txt");
-    std::cout << "Amount of safe reports: " << red_nosed_reports.countSafeReports() << std::endl;
+    red_nosed_reports.countSafeReports();
 
     return 0;
 }
