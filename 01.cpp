@@ -2,11 +2,12 @@
 
 #include <iostream>
 #include <vector>
+#include <algorithm>
 #include "FileReader.h"
 
 int main()
 {
-    FileReader file("test_input.txt");
+    FileReader file("01_input.txt");
     std::vector<std::string> input_lines = file.getLines();
 
     std::vector<int> list1;
@@ -25,5 +26,17 @@ int main()
         list1.push_back(std::stoi(val1));
         list2.push_back(std::stoi(val2));
     }
+
+    std::sort(list1.begin(), list1.end());
+    std::sort(list2.begin(), list2.end());
+
+    int total_diff = 0;
+    for (int i = 0; i < list1.size(); i++)
+    {
+        total_diff += abs(list1[i] - list2[i]);
+    }
+
+    std::cout << "The total difference is " << total_diff << std::endl;
+
     return 0;
 }
