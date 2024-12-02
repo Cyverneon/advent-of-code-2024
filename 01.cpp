@@ -7,7 +7,7 @@
 
 int main()
 {
-    FileReader file("01_input.txt");
+    FileReader file("test_input.txt");
     std::vector<std::string> input_lines = file.getLines();
 
     std::vector<int> list1;
@@ -35,8 +35,22 @@ int main()
     {
         total_diff += abs(list1[i] - list2[i]);
     }
-
     std::cout << "The total difference is " << total_diff << std::endl;
+
+    int similarity_score = 0;
+    for (int i = 0; i < list1.size(); i++)
+    {
+        int multiplier = 0;
+        for (int j = 0; j < list2.size(); j++)
+        {
+            if (list1[i] == list2[j])
+            {
+                multiplier++;
+            }
+        }
+        similarity_score += list1[i] * multiplier;
+    }
+    std::cout << "The similarity score is " << similarity_score << std::endl;
 
     return 0;
 }
