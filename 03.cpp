@@ -24,15 +24,26 @@ public:
         std::smatch match;
         std::string string = "";
 
+        bool enabled = true;
         for (int i = 0; i < m_memory.size(); i++)
         {
             string = m_memory[i];
             while (std::regex_search(string, match, ex))
             {
-                int result = stoi(match.str(1)) * stoi(match.str(2));
-                total += result;
-                //std::cout << "mul() instruction: " << match.str(0) << std::endl;
-                //std::cout << "Result: " << result << std::endl;
+                if (match.str(0) == "do()")
+                {
+                    enabled = true;
+                }
+                else if (match.str(0) == "don't()")
+                {
+                    enabled = false;
+                }
+                else if (enabled)
+                {
+                    int result = stoi(match.str(1)) * stoi(match.str(2));
+                    total += result;
+                }
+                
                 string = match.suffix().str();
             }
         }
@@ -42,13 +53,14 @@ public:
 
     void displayTotals()
     {
-        std::cout << countTotal(regex_part1) << std::endl;
+        std::cout << "Part 1: " << countTotal(regex_part1) << std::endl;
+        std::cout << "Part 2: " << countTotal(regex_part2) << std::endl;
     }
 
 private:
     std::vector<std::string> m_memory;
     std::string regex_part1 = "mul\\((\\d+),(\\d+)\\)";
-
+    std::string regex_part2 = "(?:mul\\((\\d+),(\\d+)\\))|(?:do\\(\\))|(?:don't\\(\\))";
 };
 
 int main()
