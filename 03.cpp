@@ -59,8 +59,8 @@ public:
 
 private:
     std::vector<std::string> m_memory;
-    std::string regex_part1 = "mul\\((\\d+),(\\d+)\\)";
-    std::string regex_part2 = "(?:mul\\((\\d+),(\\d+)\\))|(?:do\\(\\))|(?:don't\\(\\))";
+    std::string regex_part1 = R"(mul\((\d+),(\d+)\))";
+    std::string regex_part2 = R"((?:mul\((\d+),(\d+)\))|(?:do\(\))|(?:don't\(\)))";
 };
 
 int main()
