@@ -51,9 +51,40 @@ public:
         return xmas;
     }
 
-    int countXmas()
+    bool checkXMas(int y, int x)
+    {
+        if (y <= 0 || y >= m_lines.size()-1)
+        {
+            return false;
+        }
+        if (x <= 0 || x >= m_lines[y].size())
+        {
+            return false;
+        }
+        
+        if (!(m_lines[y-1][x-1] == 'M' && m_lines[y+1][x+1] == 'S'))
+        {
+            if (!(m_lines[y-1][x-1] == 'S' && m_lines[y+1][x+1] == 'M'))
+            {
+                return false;
+            }
+        }
+
+        if (!(m_lines[y+1][x-1] == 'M' && m_lines[y-1][x+1] == 'S'))
+        {
+            if (!(m_lines[y+1][x-1] == 'S' && m_lines[y-1][x+1] == 'M'))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    void countXmas()
     {
         int total_xmas = 0;
+        int total_x_mas = 0;
         for (int y = 0; y < m_lines.size(); y++)
         {
             for (int x = 0; x < m_lines[y].size(); x++)
@@ -62,9 +93,17 @@ public:
                 {
                     total_xmas += checkCoordinate(y, x);
                 }
+                if (m_lines[y][x] == 'A')
+                {
+                    if (checkXMas(y, x))
+                    {
+                        total_x_mas++;
+                    }
+                }
             }
         }
-        return total_xmas;
+        std::cout << "XMAS: " << total_xmas << std::endl;
+        std::cout << "X-MAS: " << total_x_mas << std::endl;
     }
 
 private:
@@ -76,7 +115,7 @@ int main()
 {
     Day04 day04;
     day04.readInput("04_input.txt");
-    std::cout << day04.countXmas() << std::endl;
+    day04.countXmas();
 
     return 0;
 }
