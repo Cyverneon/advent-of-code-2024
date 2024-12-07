@@ -76,9 +76,43 @@ public:
         return true;
     }
 
-    int sumMiddlePages()
+    std::vector<int> fixUpdate(std::vector<int> update)
     {
-        int sum = 0;
+        for (int i = 0; i < update.size(); i++)
+        {
+            bool swap = false;
+            int swap_i = 0;
+            for (int j = 0; j < i; j++)
+            {
+                if (_after_rules[update[i]].find(update[j]) != _after_rules[update[i]].end())
+                {
+                    swap = true;
+                    swap_i = j;
+                }
+            }
+            for (int j = i+1; j < update.size(); j++)
+            {
+                if (_before_rules[update[i]].find(update[j]) != _before_rules[update[i]].end())
+                {
+                    swap = true;
+                    swap_i = j;
+                }
+            }
+            if (swap)
+            {
+                int temp = update[i];
+                update[i] = update[swap_i];
+                update[swap_i] = temp;
+                update = fixUpdate(update);
+            }
+        }
+        return update;
+    }
+
+    void sumMiddlePages()
+    {
+        int sum_correct = 0;
+        int sum_incorrect = 0;
         for (int i = 0; i < _updates.size(); i++)
         {
             std::vector<std::string> update_substr = split(_updates[i], ",");
@@ -88,10 +122,16 @@ public:
 
             if (checkUpdate(update))
             {
-                sum += update[update.size()/2];
+                sum_correct += update[update.size()/2];
+            }
+            else
+            {
+                update = fixUpdate(update);
+                sum_incorrect += update[update.size()/2];
             }
         }
-        return sum;
+        std::cout << sum_correct << std::endl;
+        std::cout << sum_incorrect << std::endl;
     }
 
 private:
@@ -105,7 +145,6 @@ int main()
 {
     Day05 day05;
     day05.readInput("05_input.txt");
-    std::cout << day05.sumMiddlePages() << std::endl;
-
+    day05.sumMiddlePages();
     return 0;
 }
