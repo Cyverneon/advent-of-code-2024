@@ -6,7 +6,7 @@ My solutions to the challenges in c++
 
 ## Results
 
-Total stars: 8
+Total stars: 11
 
 | Day | Part 1 | Part 2 |
 | :---: | :---: | :---: |
